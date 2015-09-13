@@ -1,0 +1,12 @@
+{
+  "name": "tvshowstracker",
+  "version": "0.1.0",
+  "authors": [
+    "Vincent DURMONT <vdurmont@gmail.com>"
+  ],
+  "description": "Frontend app for tvshowstracker",
+  "license": "MIT",
+  "dependencies": {
+    "react": "~0.13.3"
+  }
+}

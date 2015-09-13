@@ -1,15 +1,14 @@
 module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON("package.json"),
-    babel: {
-        options: {
-            sourceMap: true
-        },
-        dist: {
-            files: {
-                "dist/app.js": "src/app.js"
-            }
-        }
+    browserify: {
+      options: {
+        transform: [ require("grunt-react").browserify ]
+      },
+      client: {
+        src: ["src/**/*.jsx"],
+        dest: "dist/app.js"
+      }
     },
     clean: {
       files: ["dist"]
@@ -27,11 +26,11 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.loadNpmTasks('grunt-babel');
+  grunt.loadNpmTasks("grunt-browserify");
   grunt.loadNpmTasks("grunt-contrib-clean");
   grunt.loadNpmTasks("grunt-contrib-copy");
   grunt.loadNpmTasks("grunt-contrib-jshint");
 
-  grunt.registerTask("default", ["clean", "jshint", "copy", "babel"]);
+  grunt.registerTask("default", ["clean", "jshint", "copy", "browserify"]);
 
 };

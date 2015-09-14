@@ -1,5 +1,6 @@
 var React = require("react");
-var ShowList = require("./ShowList.jsx");
+
+var FilterableShowList = require("./FilterableShowList.jsx");
 
 var SHOWS = [
   {id: 1, title: "The S.H.I.E.L.D"},
@@ -9,6 +10,6 @@ var SHOWS = [
 ];
 
 React.render(
-  <ShowList shows={SHOWS} />,
+  <FilterableShowList shows={SHOWS} />,
   document.getElementById("content")
 );

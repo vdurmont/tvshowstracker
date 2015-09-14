@@ -4,12 +4,12 @@ var ShowItem = require("./ShowItem.jsx");
 module.exports = React.createClass({
   render: function() {
     var shows = [];
-    var that = this;
-    this.props.shows.forEach(function(show) {
-      if (show.title.toLowerCase().indexOf(that.props.filterText.toLowerCase()) !== -1) {
+    for (var id in this.props.shows) {
+      var show = this.props.shows[id];
+      if (show.title.toLowerCase().indexOf(this.props.filterText.toLowerCase()) !== -1) {
         shows.push(<ShowItem show={show} key={show.id} />);
       }
-    });
+    }
     return (
       <ul>
         {shows}

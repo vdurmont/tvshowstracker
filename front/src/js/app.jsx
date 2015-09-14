@@ -1,6 +1,6 @@
 var React = require("react");
 
-var FilterableShowList = require("./FilterableShowList.jsx");
+var FilterableShowList = require("./components/FilterableShowList.jsx");
 
 var SHOWS = [
   {id: 1, title: "The S.H.I.E.L.D"},

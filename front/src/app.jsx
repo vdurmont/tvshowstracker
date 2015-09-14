@@ -1,5 +1,5 @@
 var React = require("react");
-var ShowList = require("./showList.jsx");
+var ShowList = require("./ShowList.jsx");
 
 var SHOWS = [
   {id: 1, title: "The S.H.I.E.L.D"},

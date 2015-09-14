@@ -1,5 +1,5 @@
 var React = require("react");
-var ShowItem = require("./showItem.jsx");
+var ShowItem = require("./ShowItem.jsx");
 
 module.exports = React.createClass({
     render: function() {

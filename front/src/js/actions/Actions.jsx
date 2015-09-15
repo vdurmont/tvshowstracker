@@ -1,6 +1,6 @@
-var keymirror = require("react/lib/keymirror");
+var keyMirror = require("react/lib/keyMirror");
 
-module.exports = keymirror({
+module.exports = keyMirror({
   LOAD_SHOW: "LOAD_SHOW",
   LOAD_SHOW_SUCCESS: "LOAD_SHOW_SUCCESS",
   LOAD_SHOW_FAILURE: "LOAD_SHOW_FAILURE",

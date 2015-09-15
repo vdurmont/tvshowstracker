@@ -1,5 +1,6 @@
 var React = require("react");
 
+var Constants = require("../constants/Constants.js");
 var ShowStore = require("../stores/ShowStore.jsx");
 
 /**
@@ -29,6 +30,8 @@ module.exports = React.createClass({
     var show = this.state.show;
     if (show == null) {
       // TODO Print a 404
+    } else if (show === Constants.IS_LOADING) {
+      return (<div>Loading...</div>);
     }
     return (
       <div>

@@ -4,10 +4,11 @@ var React = require("react");
 var Router = require("react-router");
 var DefaultRoute = Router.DefaultRoute;
 var Link = Router.Link;
+var NotFoundRoute = Router.NotFoundRoute;
 var Route = Router.Route;
 var RouteHandler = Router.RouteHandler;
 
-var NoMatch = require("./components/NoMatch.jsx");
+var NotFound = require("./components/NotFound.jsx");
 var ShowPage = require("./components/ShowPage.jsx");
 var ShowsPage = require("./components/ShowsPage.jsx");
 
@@ -29,7 +30,7 @@ var routes = (
   <Route name="app" path="/" handler={App}>
     <Route name="shows" path="shows" handler={ShowsPage}/>
     <Route name="show" path="shows/:showId" handler={ShowPage}/>
-    <Route name="nomatch" handler={NoMatch}/>
+    <NotFoundRoute handler={NotFound}/>
     <DefaultRoute handler={ShowsPage}/>
   </Route>
 );

@@ -8,9 +8,9 @@ var NotFoundRoute = Router.NotFoundRoute;
 var Route = Router.Route;
 var RouteHandler = Router.RouteHandler;
 
-var NotFound = require("./components/NotFound.jsx");
-var ShowPage = require("./components/ShowPage.jsx");
-var ShowsPage = require("./components/ShowsPage.jsx");
+var NotFound = require("./pages/NotFoundPage.jsx");
+var ShowPage = require("./pages/ShowPage.jsx");
+var ShowsPage = require("./pages/ShowsPage.jsx");
 
 var App = React.createClass({
   render() {

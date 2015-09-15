@@ -1,6 +1,8 @@
 var React = require("react");
 
-var FilterableShowList = require("./FilterableShowList.jsx");
+var Constants = require("../constants/Constants.js");
+var FilterableShowList = require("../components/FilterableShowList.jsx");
+var ShowActionCreator = require("../actions/ShowActionCreator.jsx");
 var ShowStore = require("../stores/ShowStore.jsx");
 
 /**
@@ -16,6 +18,9 @@ module.exports = React.createClass({
   getInitialState: function() {
     return getState();
   },
+  componentWillMount() {
+    ShowActionCreator.loadAll();
+  },
   componentDidMount: function() {
     ShowStore.addChangeListener(this._onChange);
   },
@@ -23,9 +28,13 @@ module.exports = React.createClass({
     ShowStore.removeChangeListener(this._onChange);
   },
   render: function() {
-    return (
-      <FilterableShowList shows={this.state.allShows} />
-    );
+    var shows = this.state.allShows;
+    if (shows == null) {
+      return (<div>Loading error :(</div>);
+    } else if (shows === Constants.IS_LOADING) {
+      return (<div>Loading...</div>);
+    }
+    return (<FilterableShowList shows={shows} />);
   },
 
   /**

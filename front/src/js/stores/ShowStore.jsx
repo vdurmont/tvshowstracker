@@ -1,5 +1,5 @@
-// TODO var AppDispatcher = require("../dispatcher/AppDispatcher");
-// TODO var TodoConstants = require('../constants/TodoConstants');
+var Actions = require("../actions/Actions.jsx");
+var AppDispatcher = require("../dispatcher/AppDispatcher");
 var EventEmitter = require("events").EventEmitter;
 var assign = require("object-assign");
 var Constants = require("../constants/Constants.js");
@@ -7,41 +7,53 @@ var ShowClient = require("../clients/ShowClient.js");
 
 var CHANGE_EVENT = "change";
 
-var _loadAllCalled = false;
-var _loadOneCalled = {};
 var _shows = {};
 
-module.exports = assign({}, EventEmitter.prototype, {
+var _loadingShows = {};
+var _errorShows = {};
+
+var _loadedAll = false;
+var _loadingAll = false;
+var _errorAll = false;
+
+var store = assign({}, EventEmitter.prototype, {
   getAll: function() {
-    if (_loadAllCalled) {
-      return _shows;
+    if (_errorAll) {
+      return null;
+    } else if (_loadingAll) {
+      return Constants.IS_LOADING;
     }
-    var that = this;
-    ShowClient.loadAll(function(shows) {
-      _loadAllCalled = true;
-      _shows = shows;
-      that.emitChange();
-    }, function(err) {
-      // TODO
-      console.log("Err occurred in loadAll");
-    });
-    return Constants.IS_LOADING;
+
+    var shows = [];
+    for (var key in _shows) {
+      shows.push(_shows[key]);
+    }
+    if (shows.length == 0) {
+      return Constants.IS_LOADING;
+    }
+    return shows;
   },
 
   getOne: function(showId) {
-    if (_loadAllCalled || _loadOneCalled[showId]) {
-      return _shows[showId];
+    if (_errorShows[showId]) {
+      return null;
+    } else if (_loadingShows[showId]) {
+      return Constants.IS_LOADING;
     }
-    var that = this;
-    ShowClient.loadOne(showId, function(show) {
-      _loadOneCalled[showId] = true;
-      _shows[showId] = show;
-      that.emitChange();
-    }, function(err) {
-      // TODO
-      console.log("Err occurred in loadOne with showId=" + showId);
-    });
-    return Constants.IS_LOADING;
+
+    var show = _shows[showId];
+    if (show == null) {
+      return Constants.IS_LOADING;
+    }
+    return show;
+  },
+
+  has: function(showId) {
+    return _shows[showId] != null;
+  },
+
+  hasLoadedAll: function() {
+    return _loadedAll;
   },
 
   emitChange: function() {
@@ -56,58 +68,59 @@ module.exports = assign({}, EventEmitter.prototype, {
     this.removeListener(CHANGE_EVENT, callback);
   }
 });
+module.exports = store;
 
-// // Register callback to handle all updates
-// AppDispatcher.register(function(action) {
-//   var text;
-//
-//   switch(action.actionType) {
-//     case TodoConstants.TODO_CREATE:
-//     text = action.text.trim();
-//     if (text !== '') {
-//       create(text);
-//       TodoStore.emitChange();
-//     }
-//     break;
-//
-//     case TodoConstants.TODO_TOGGLE_COMPLETE_ALL:
-//     if (TodoStore.areAllComplete()) {
-//       updateAll({complete: false});
-//     } else {
-//       updateAll({complete: true});
-//     }
-//     TodoStore.emitChange();
-//     break;
-//
-//     case TodoConstants.TODO_UNDO_COMPLETE:
-//     update(action.id, {complete: false});
-//     TodoStore.emitChange();
-//     break;
-//
-//     case TodoConstants.TODO_COMPLETE:
-//     update(action.id, {complete: true});
-//     TodoStore.emitChange();
-//     break;
-//
-//     case TodoConstants.TODO_UPDATE_TEXT:
-//     text = action.text.trim();
-//     if (text !== '') {
-//       update(action.id, {text: text});
-//       TodoStore.emitChange();
-//     }
-//     break;
-//
-//     case TodoConstants.TODO_DESTROY:
-//     destroy(action.id);
-//     TodoStore.emitChange();
-//     break;
-//
-//     case TodoConstants.TODO_DESTROY_COMPLETED:
-//     destroyCompleted();
-//     TodoStore.emitChange();
-//     break;
-//
-//     default:
-//     // no op
-//   }
-// });
+// Register callback to handle all updates
+AppDispatcher.register(function(action) {
+  console.log("Received action in ShowStore: " + JSON.stringify(action)); // TODO sysou
+
+  var shouldEmitEvent = true;
+  switch(action.action) {
+    case Actions.LOAD_SHOW:
+    delete _errorShows[action.query.showId];
+    delete _shows[action.query.showId];
+    _loadingShows[action.query.showId] = true;
+    break;
+
+    case Actions.LOAD_SHOW_SUCCESS:
+    delete _loadingShows[action.query.showId];
+    delete _errorShows[action.query.showId];
+    _shows[action.query.showId] = action.response;
+    break;
+
+    case Actions.LOAD_SHOW_FAILURE:
+    delete _loadingShows[action.query.showId];
+    delete _shows[action.query.showId];
+    _errorShows[action.query.showId] = true;
+    break;
+
+    case Actions.LOAD_SHOWS:
+    _errorAll = false;
+    _loadingAll = true;
+    break;
+
+    case Actions.LOAD_SHOWS_SUCCESS:
+    _errorAll = false;
+    _loadingAll = false;
+    _loadedAll = true;
+    var shows = {};
+    action.response.forEach(function(show) {
+      shows[show.id] = show;
+    });
+    _shows = shows;
+    break;
+
+    case Actions.LOAD_SHOWS_FAILURE:
+    _errorAll = true;
+    _loadingAll = false;
+    _loadedAll = true;
+    break;
+
+    default:
+    shouldEmitEvent =  false;
+  }
+
+  if (shouldEmitEvent) {
+    store.emitChange();
+  }
+});

@@ -1,4 +1,4 @@
-var React = require("react");
+var Q = require("q");
 
 // TODO Fake data
 var SHOWS = [
@@ -9,15 +9,17 @@ var SHOWS = [
 ];
 
 module.exports = {
-  loadAll: function(success, failure) {
+  loadAll: function() {
     // TODO Fake loading
+    var deferred = Q.defer();
     setTimeout(function() {
-      success(SHOWS);
+      deferred.resolve(SHOWS);
     }, 1000);
+    return deferred.promise;
   },
-
-  loadOne: function(showId, success, failure) {
+  loadOne: function(showId) {
     // TODO Fake loading
+    var deferred = Q.defer();
     setTimeout(function() {
       var res;
       SHOWS.forEach(function(show) {
@@ -26,10 +28,11 @@ module.exports = {
         }
       });
       if (res) {
-        success(res);
+        deferred.resolve(res);
       } else {
-        failure();
+        deferred.reject({status: 404, code: "NOT_FOUND"});
       }
     }, 1000);
+    return deferred.promise;
   }
 };

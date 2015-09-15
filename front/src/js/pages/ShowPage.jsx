@@ -1,6 +1,7 @@
 var React = require("react");
 
 var Constants = require("../constants/Constants.js");
+var ShowActionCreator = require("../actions/ShowActionCreator.jsx");
 var ShowStore = require("../stores/ShowStore.jsx");
 
 /**
@@ -8,9 +9,10 @@ var ShowStore = require("../stores/ShowStore.jsx");
 */
 function getStateFromStore(context) {
   var showId = context.router.getCurrentParams().showId;
-  return {
+  var res = {
     show: ShowStore.getOne(showId)
   };
+  return res;
 }
 
 module.exports = React.createClass({
@@ -19,6 +21,9 @@ module.exports = React.createClass({
   },
   getInitialState: function() {
     return getStateFromStore(this.context);
+  },
+  componentWillMount() {
+    ShowActionCreator.loadOne(this.context.router.getCurrentParams().showId);
   },
   componentDidMount: function() {
     ShowStore.addChangeListener(this._onChange);
@@ -29,7 +34,7 @@ module.exports = React.createClass({
   render: function() {
     var show = this.state.show;
     if (show == null) {
-      // TODO Print a 404
+      return (<div>Loading error :(</div>);
     } else if (show === Constants.IS_LOADING) {
       return (<div>Loading...</div>);
     }

@@ -72,8 +72,6 @@ module.exports = store;
 
 // Register callback to handle all updates
 AppDispatcher.register(function(action) {
-  console.log("Received action in ShowStore: " + JSON.stringify(action)); // TODO sysou
-
   var shouldEmitEvent = true;
   switch(action.action) {
     case Actions.LOAD_SHOW:

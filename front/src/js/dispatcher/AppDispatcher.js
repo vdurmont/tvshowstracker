@@ -16,8 +16,7 @@ function dispatch(action, data) {
     error: data.error,
     response: data.response
   };
-  
-  console.log("Dispatching: " + action + " " + JSON.stringify(obj)); // TODO sysou
+
   fluxDispatcher.dispatch(obj);
 }
 

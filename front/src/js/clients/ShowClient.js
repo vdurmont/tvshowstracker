@@ -4,8 +4,8 @@ var $ = require("jquery");
 function get(path) {
   var deferred = Q.defer();
 
-  // TODO fix the API urls :D
-  var url = path.replace("/shows", "http://localhost:9001/controllers/ShowsController.hh");
+  // TODO Move this in a config file
+  var url = "http://localhost:9001" + path;
 
   $.get(url, function(data) {
     deferred.resolve(data);
@@ -20,6 +20,6 @@ module.exports = {
     return get("/shows");
   },
   loadOne: function(showId) {
-    return get("/shows?id=" + showId);
+    return get("/shows/" + showId);
   }
 };

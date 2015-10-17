@@ -1,5 +1,7 @@
 <?hh
 
+namespace TVST;
+
 require_once("models/Show.hh");
 
 /**
@@ -14,7 +16,7 @@ class Database {
     return Database::$current_id;
   }
 
-  public function __construct() {
+  public static function init() {
     if (Database::$current_id == 0) {
       // Init with some shows
       $id = Database::nextId();
@@ -32,7 +34,7 @@ class Database {
     }
   }
 
-  public function getShow(int $showId) : ?Show {
+  public static function getShow(int $showId) : ?Show {
     if(array_key_exists($showId, Database::$shows)) {
       return Database::$shows[$showId];
     } else {
@@ -40,7 +42,7 @@ class Database {
     }
   }
 
-  public function getShows() : array {
+  public static function getShows() : array {
     return array_values(Database::$shows);
   }
 }

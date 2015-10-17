@@ -1,5 +1,7 @@
 <?hh
 
+namespace TVST;
+
 class Show {
   private int $id;
   private string $title;
